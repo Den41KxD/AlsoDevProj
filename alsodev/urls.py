@@ -6,7 +6,7 @@ from alsodev.views import CustomAuthToken
 
 router = SimpleRouter()
 router.register('user', UserViewSet)
-router.register('product',ProductViewSet)
+router.register('product', ProductViewSet)
 
 
 urlpatterns = [
