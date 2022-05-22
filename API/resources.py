@@ -79,7 +79,7 @@ class ProductViewSet(ModelViewSet):
                             image_to_delete.delete()
                     except ObjectDoesNotExist as e:
                         photo_id = request.data.get('photo_id_to_delete')
-                        my_response.data.update({e.args[0]:f'Image with id {photo_id} does not exist'})
+                        my_response.data.update({e.args[0]: f'Image with id {photo_id} does not exist'})
             return my_response
         else:
             return Response('You can\'t update this product')

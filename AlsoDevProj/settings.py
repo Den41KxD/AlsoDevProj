@@ -141,6 +141,3 @@ REST_FRAMEWORK = {
 }
 
 TOKEN_TTL = 60*60*24
-
-
-
