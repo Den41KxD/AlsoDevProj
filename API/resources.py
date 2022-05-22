@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from API.serializers import UserSerializers, ProductSerializer, PictureSerializer, photo_save
 from alsodev.models import User, Product, Picture
 
@@ -61,31 +63,37 @@ class ProductViewSet(ModelViewSet):
             return Response('You can\'t delete this product')
 
     def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
         product_name = Product.objects.get(id=kwargs['pk'])
         if product_name.author == request.user or request.user.is_superuser:
-            my_response=super(ProductViewSet, self).partial_update(request)
-
+            my_response = super(ProductViewSet, self).partial_update(request)
             if my_response.status_code == 200:
                 photo_save(request, product_name)
+                if request.data.get('photo_id_to_delete'):
+                    photo_id = request.data.get('photo_id_to_delete')
+                    photo_id = photo_id.split(',')
+                    try:
+                        for i in photo_id:
+                            image_to_delete = Picture.objects.get(id=int(i))
+                            os.remove(f"media/{image_to_delete.image}")
+                            image_to_delete.delete()
+                    except ObjectDoesNotExist as e:
+                        photo_id = request.data.get('photo_id_to_delete')
+                        my_response.data.update({e.args[0]:f'Image with id {photo_id} does not exist'})
             return my_response
         else:
             return Response('You can\'t update this product')
 
-    def update(self, request, *args, **kwargs):
-        if request.stream.method == 'PATCH':
-            return super(ProductViewSet, self).update(request)
-        else:
-            product_name = Product.objects.get(id=kwargs['pk'])
-            if product_name.author == request.user or request.user.is_superuser:
-                response = super(ProductViewSet, self).update(request)
-
-                if response.status_code == 200:
-                    image_to_delete = Picture.objects.filter(product_to_id=kwargs['pk'])
-                    for image in image_to_delete:
-                        os.remove(f"media/{image.image}")
-                        image.delete()
-                    photo_save(request, product_name)
-
-                return response
+    def perform_update(self, serializer):
+        if self.request.stream.method == 'PUT':
+            product_name = Product.objects.get(id=self.kwargs['pk'])
+            if product_name.author == self.request.user or self.request.user.is_superuser:
+                image_to_delete = Picture.objects.filter(product_to_id=self.kwargs['pk'])
+                for image in image_to_delete:
+                    os.remove(f"media/{image.image}")
+                    image.delete()
+                photo_save(self.request, product_name)
             else:
                 return Response('You can\'t update this product')
+
+        serializer.save()

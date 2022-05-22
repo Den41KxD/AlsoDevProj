@@ -14,7 +14,7 @@ def user_directory_path(instance, filename):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=100, default='unknown_prod', unique=True)
+    name = models.CharField(max_length=100, unique=True)
     price = models.IntegerField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Product')
     created_at = models.DateTimeField(auto_now=True)
