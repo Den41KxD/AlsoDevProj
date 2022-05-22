@@ -26,36 +26,36 @@ this token is temporary, if not used it will be deleted after 24 hours
 [POST]
 http://127.0.0.1:8000/api/product/ create new product 
 Fields must be added to the body:
-    'name'
-    'price'
+    1. 'name'
+    2. 'price'
 optionally add fields:
-    'image'
+    3. 'image'
 
 [GET]
 http://127.0.0.1:8000/api/product/ get all products
 
 [GET]
-http://127.0.0.1:8000/api/product/{id} get one product by id
+http://127.0.0.1:8000/api/product/{id}/ get one product by id
 
 [DELETE]
-http://127.0.0.1:8000/api/product/{id} delete one product by id
+http://127.0.0.1:8000/api/product/{id}/ delete one product by id
 
 [PATCH]
-http://127.0.0.1:8000/api/product/{id} partial change one product by id
+http://127.0.0.1:8000/api/product/{id}/ partial change one product by id
 
 optionally add fields:
-    'name'
-    'price'
-    'image' - new images to add to the current product
-    'photo_id_to_delete' - single value or list of images to remove
+    1.'name'
+    2.'price'
+    3.'image' - new images to add to the current product
+    4.'photo_id_to_delete' - single value or list of images to remove
 
 [PUT]
-http://127.0.0.1:8000/api/product/{id} 
+http://127.0.0.1:8000/api/product/{id}/
 Complete change of one product by id, all photos will be deleted.
 If you send new photos, they will be added instead of deleted ones
 
 Fields must be added to the body:
-    'name'
-    'price'
+    1.'name'
+    2.'price'
 optionally add fields:
-    'image'
+    3.'image'

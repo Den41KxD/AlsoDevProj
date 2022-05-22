@@ -73,8 +73,8 @@ class ProductViewSet(ModelViewSet):
                     photo_id = request.data.get('photo_id_to_delete')
                     photo_id = photo_id.split(',')
                     try:
-                        for i in photo_id:
-                            image_to_delete = Picture.objects.get(id=int(i))
+                        for one_photo_id in photo_id:
+                            image_to_delete = Picture.objects.get(id=int(one_photo_id))
                             os.remove(f"media/{image_to_delete.image}")
                             image_to_delete.delete()
                     except ObjectDoesNotExist as e:
